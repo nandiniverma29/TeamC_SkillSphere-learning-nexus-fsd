@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --ink: #14231D;
+  --ridge: #1D3327;
+  --ridge-light: #24402F;
+  --orange: #E2762D;
+  --orange-dim: #B95E22;
+  --sage: #9FC2A7;
+  --chalk: #F3F1E7;
+  --chalk-dim: #C9C7BC;
+  --contour: #3F5B4C;
+
+  --font-display: 'Big Shoulders Display', sans-serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--ink);
+  color: var(--chalk);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--orange);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--orange);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.section {
+  padding: 7rem 6vw;
+  border-top: 1px solid var(--contour);
+  position: relative;
+}
+
+.section-head {
+  max-width: 640px;
+  margin-bottom: 3.5rem;
+}
+
+.section-head h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  letter-spacing: -0.01em;
+  line-height: 1;
+  margin-top: 0.75rem;
+  text-transform: uppercase;
+}
+
+.section-head h2 em {
+  font-style: normal;
+  color: var(--orange);
+}
+
+.section-head p {
+  margin-top: 1rem;
+  color: var(--chalk-dim);
+  font-size: 1.05rem;
+  max-width: 46ch;
+}
+
+@media (max-width: 720px) {
+  .section {
+    padding: 4.5rem 6vw;
+  }
+}

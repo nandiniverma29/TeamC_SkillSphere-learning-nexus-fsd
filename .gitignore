@@ -1,0 +1,16 @@
+# Node
+node_modules/
+dist/
+.vite/
+
+# Java / Maven
+target/
+*.class
+
+# IDE
+.idea/
+*.iml
+
+# Secrets
+.env
+application.properties
