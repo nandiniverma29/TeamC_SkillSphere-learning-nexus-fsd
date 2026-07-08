@@ -1,16 +1,19 @@
+import { Link } from "react-router-dom";
 export default function Navbar() {
   const links = [
-    { href: '#explore', label: 'Explore' },
-    { href: '#learn', label: 'Learn' },
-    { href: '#track', label: 'Track' },
-    { href: '#analytics', label: 'Analytics' },
-    { href: '#connect', label: 'Connect' },
+    { href: "#explore", label: "Explore" },
+    { href: "#learn", label: "Learn" },
+    { href: "#track", label: "Track" },
+    { href: "#analytics", label: "Analytics" },
+    { href: "#connect", label: "Connect" },
   ];
 
   return (
     <nav className="navbar">
       <a href="#explore" className="navbar-brand">
-        <span className="navbar-mark" aria-hidden="true">▲</span>
+        <span className="navbar-mark" aria-hidden="true">
+          ▲
+        </span>
         SKILLSPHERE
       </a>
       <ul className="navbar-links">
@@ -20,7 +23,9 @@ export default function Navbar() {
           </li>
         ))}
       </ul>
-      <a href="#connect" className="navbar-cta">Sign in</a>
+      <Link to="/login" className="navbar-cta">
+        LOGIN / SIGN UP
+      </Link>
 
       <style>{`
         .navbar {

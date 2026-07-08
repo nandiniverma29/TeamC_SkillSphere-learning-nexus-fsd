@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 export default function Hero() {
   return (
     <header id="explore" className="hero">
@@ -22,17 +23,23 @@ export default function Hero() {
       <div className="hero-content">
         <p className="eyebrow">Trailhead — expedition 04 now boarding</p>
         <h1>
-          Bridge<br />
-          learning<br />
+          Bridge
+          <br />
+          learning
+          <br />
           to <em>ready.</em>
         </h1>
         <p className="hero-copy">
-          SkillSphere charts the route from where you are to where the
-          workforce needs you — real routes, real elevation, tracked as you climb.
+          SkillSphere charts the route from where you are to where the workforce
+          needs you — real routes, real elevation, tracked as you climb.
         </p>
         <div className="hero-actions">
-          <a href="#learn" className="btn btn-primary">Start the climb</a>
-          <a href="#track" className="btn btn-outline">View the trail map</a>
+          <Link to="/login" className="btn btn-primary">
+            Start the climb
+          </Link>
+          <a href="#track" className="btn btn-outline">
+            View the trail map
+          </a>
         </div>
         <div className="hero-coords">40.21 N · WORKFORCE READY LINE</div>
       </div>
