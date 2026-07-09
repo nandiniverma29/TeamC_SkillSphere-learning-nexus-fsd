@@ -1,11 +1,14 @@
+import { BrowserRouter, Routes as RouterRoutes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Routes from './components/Routes';
 import Instruments from './components/Instruments';
 import TrailLog from './components/TrailLog';
 import Connect from './components/Connect';
+import OAuthSuccess from './components/OAuthSuccess';
 
-function App() {
+function Landing() {
   return (
     <>
       <Navbar />
@@ -15,6 +18,19 @@ function App() {
       <TrailLog />
       <Connect />
     </>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <RouterRoutes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/oauth-success" element={<OAuthSuccess />} />
+        </RouterRoutes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
