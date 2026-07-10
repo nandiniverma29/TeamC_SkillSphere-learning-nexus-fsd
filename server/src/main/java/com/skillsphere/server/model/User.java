@@ -21,6 +21,9 @@ public class User {
     @Column(name = "google_id", unique = true)
     private String googleId;
 
+    @Column(nullable = true)
+    private String password;
+
     @Column(name = "profile_picture")
     private String profilePicture;
 }

@@ -7,6 +7,8 @@ import Instruments from './components/Instruments';
 import TrailLog from './components/TrailLog';
 import Connect from './components/Connect';
 import OAuthSuccess from './components/OAuthSuccess';
+import Login from './components/Login';
+import Signup from './components/Signup';
 
 function Landing() {
   return (
@@ -28,6 +30,8 @@ function App() {
         <RouterRoutes>
           <Route path="/" element={<Landing />} />
           <Route path="/oauth-success" element={<OAuthSuccess />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </RouterRoutes>
       </BrowserRouter>
     </AuthProvider>

@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Hero() {
   return (
     <header id="explore" className="hero">
@@ -31,7 +33,7 @@ export default function Hero() {
           workforce needs you — real routes, real elevation, tracked as you climb.
         </p>
         <div className="hero-actions">
-          <a href="#learn" className="btn btn-primary">Start the climb</a>
+          <Link to="/login" className="btn btn-primary">Start the climb</Link>
           <a href="#track" className="btn btn-outline">View the trail map</a>
         </div>
         <div className="hero-coords">40.21 N · WORKFORCE READY LINE</div>
