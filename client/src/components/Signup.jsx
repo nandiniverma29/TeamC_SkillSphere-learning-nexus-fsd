@@ -30,7 +30,7 @@ export default function Signup() {
         setError(data.error || 'Signup failed');
       } else {
         login(data.token);
-        navigate('/');
+        navigate('/dashboard');
       }
     } catch (err) {
       setError('Could not reach the server. Is the backend running?');

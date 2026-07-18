@@ -9,6 +9,9 @@ import Connect from './components/Connect';
 import OAuthSuccess from './components/OAuthSuccess';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import Dashboard from './components/Dashboard';
+import Courses from './components/Courses';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function Landing() {
   return (
@@ -32,6 +35,22 @@ function App() {
           <Route path="/oauth-success" element={<OAuthSuccess />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/courses"
+            element={
+              <ProtectedRoute>
+                <Courses />
+              </ProtectedRoute>
+            }
+          />
         </RouterRoutes>
       </BrowserRouter>
     </AuthProvider>

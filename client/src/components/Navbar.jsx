@@ -26,7 +26,11 @@ export default function Navbar() {
         ))}
       </ul>
       {isAuthenticated ? (
-        <button className="navbar-cta" onClick={logout}>Sign out</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <Link to="/courses" className="navbar-cta">Courses</Link>
+          <Link to="/dashboard" className="navbar-cta">Dashboard</Link>
+          <button className="navbar-cta" onClick={logout}>Sign out</button>
+        </div>
       ) : (
         <Link to="/login" className="navbar-cta">Sign in / Sign up</Link>
       )}
