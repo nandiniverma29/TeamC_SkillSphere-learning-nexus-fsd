@@ -6,6 +6,10 @@ export default function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [gender, setGender] = useState('');
+  const [location, setLocation] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -23,7 +27,15 @@ export default function Signup() {
       const res = await fetch('http://localhost:8080/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          phoneNumber,
+          dateOfBirth: dateOfBirth || null,
+          gender,
+          location,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -88,6 +100,37 @@ export default function Signup() {
           minLength={6}
         />
 
+        <label>Phone number</label>
+        <input
+          type="tel"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          placeholder="Enter your phone number"
+        />
+
+        <label>Date of birth</label>
+        <input
+          type="date"
+          value={dateOfBirth}
+          onChange={(e) => setDateOfBirth(e.target.value)}
+        />
+
+        <label>Gender</label>
+        <select value={gender} onChange={(e) => setGender(e.target.value)}>
+          <option value="">Prefer not to say</option>
+          <option value="Female">Female</option>
+          <option value="Male">Male</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <label>Location</label>
+        <input
+          type="text"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          placeholder="City, Country"
+        />
+
         <button type="submit" className="submit-btn" disabled={loading}>
           {loading ? 'Creating account...' : 'Create Account →'}
         </button>
@@ -98,7 +141,7 @@ export default function Signup() {
       </form>
 
       <style>
-        {".auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--ink); padding: 2rem; } .auth-card { background: var(--ridge); border: 1px solid var(--contour); padding: 2.5rem; max-width: 420px; width: 100%; } .auth-card h1 { font-family: var(--font-display); font-weight: 700; font-size: 2.2rem; text-transform: uppercase; margin: 0.5rem 0 0.75rem; } .auth-card h1 em { font-style: normal; color: var(--orange); } .auth-sub { color: var(--chalk-dim); font-size: 0.9rem; margin-bottom: 1rem; } .auth-card label { display: block; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--chalk-dim); margin-bottom: 0.4rem; margin-top: 1.1rem; } .auth-card input { width: 100%; background: var(--ink); border: 1px solid var(--contour); color: var(--chalk); padding: 0.75rem 0.9rem; font-family: var(--font-body); font-size: 0.95rem; } .auth-card input:focus { outline: none; border-color: var(--orange); } .submit-btn { width: 100%; margin-top: 1.75rem; background: var(--orange); color: var(--ink); border: none; padding: 0.9rem; font-family: var(--font-mono); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; transition: background 0.2s ease; } .submit-btn:hover { background: var(--orange-dim); } .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; } .auth-switch { text-align: center; margin-top: 1.5rem; color: var(--chalk-dim); font-size: 0.85rem; } .auth-switch a { color: var(--orange); font-weight: 600; } .auth-error { background: rgba(220,80,60,0.15); border: 1px solid #dc503c; color: #ff9c8a; padding: 0.7rem 0.9rem; font-size: 0.85rem; margin-bottom: 0.5rem; } .google-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.65rem; background: var(--chalk); color: var(--ink); border: none; padding: 0.85rem; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; margin-top: 1.5rem; cursor: pointer; transition: transform 0.15s ease; } .google-btn:hover { transform: translateY(-2px); } .auth-divider { display: flex; align-items: center; text-align: center; color: var(--chalk-dim); font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 1.25rem 0; } .auth-divider::before, .auth-divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--contour); } .auth-divider span { padding: 0 0.75rem; }"}
+        {".auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--ink); padding: 2rem; } .auth-card { background: var(--ridge); border: 1px solid var(--contour); padding: 2.5rem; max-width: 420px; width: 100%; } .auth-card h1 { font-family: var(--font-display); font-weight: 700; font-size: 2.2rem; text-transform: uppercase; margin: 0.5rem 0 0.75rem; } .auth-card h1 em { font-style: normal; color: var(--orange); } .auth-sub { color: var(--chalk-dim); font-size: 0.9rem; margin-bottom: 1rem; } .auth-card label { display: block; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--chalk-dim); margin-bottom: 0.4rem; margin-top: 1.1rem; } .auth-card input, .auth-card select { width: 100%; background: var(--ink); border: 1px solid var(--contour); color: var(--chalk); padding: 0.75rem 0.9rem; font-family: var(--font-body); font-size: 0.95rem; } .auth-card input:focus, .auth-card select:focus { outline: none; border-color: var(--orange); } .submit-btn { width: 100%; margin-top: 1.75rem; background: var(--orange); color: var(--ink); border: none; padding: 0.9rem; font-family: var(--font-mono); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; transition: background 0.2s ease; } .submit-btn:hover { background: var(--orange-dim); } .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; } .auth-switch { text-align: center; margin-top: 1.5rem; color: var(--chalk-dim); font-size: 0.85rem; } .auth-switch a { color: var(--orange); font-weight: 600; } .auth-error { background: rgba(220,80,60,0.15); border: 1px solid #dc503c; color: #ff9c8a; padding: 0.7rem 0.9rem; font-size: 0.85rem; margin-bottom: 0.5rem; } .google-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.65rem; background: var(--chalk); color: var(--ink); border: none; padding: 0.85rem; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; margin-top: 1.5rem; cursor: pointer; transition: transform 0.15s ease; } .google-btn:hover { transform: translateY(-2px); } .auth-divider { display: flex; align-items: center; text-align: center; color: var(--chalk-dim); font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 1.25rem 0; } .auth-divider::before, .auth-divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--contour); } .auth-divider span { padding: 0 0.75rem; }"}
       </style>
     </div>
   );

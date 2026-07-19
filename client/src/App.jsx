@@ -9,6 +9,8 @@ import Connect from './components/Connect';
 import OAuthSuccess from './components/OAuthSuccess';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import Dashboard from './components/Dashboard';
 import Courses from './components/Courses';
 import CourseLearn from './components/CourseLearn';
@@ -36,6 +38,8 @@ function App() {
           <Route path="/oauth-success" element={<OAuthSuccess />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route
             path="/dashboard"
             element={
