@@ -29,6 +29,7 @@ export default function Navbar() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <Link to="/courses" className="navbar-cta">Courses</Link>
           <Link to="/dashboard" className="navbar-cta">Dashboard</Link>
+          <Link to="/profile" className="navbar-cta">Profile</Link>
           <button className="navbar-cta" onClick={logout}>Sign out</button>
         </div>
       ) : (

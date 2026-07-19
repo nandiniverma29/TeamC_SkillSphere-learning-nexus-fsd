@@ -14,6 +14,7 @@ import ResetPassword from './components/ResetPassword';
 import Dashboard from './components/Dashboard';
 import Courses from './components/Courses';
 import CourseLearn from './components/CourseLearn';
+import Profile from './components/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function Landing() {
@@ -61,6 +62,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <CourseLearn />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             }
           />
