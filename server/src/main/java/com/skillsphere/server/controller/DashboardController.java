@@ -34,6 +34,15 @@ public class DashboardController {
         return ResponseEntity.ok(dashboardService.getEnrollments(user));
     }
 
+    // POST /api/dashboard/enrollments/{enrollmentId}/progress
+    // Logs one unit of progress on a course, called by the "Resume trail" button.
+    @PostMapping("/enrollments/{enrollmentId}/progress")
+    public ResponseEntity<?> addProgress(@PathVariable Long enrollmentId, Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return ResponseEntity.ok(dashboardService.addProgress(user, enrollmentId, 1));
+    }
+
     // DEV-ONLY: populates sample courses/enrollments/activity for the logged-in
     // user so the dashboard has real data before the course catalog and
     // enrollment flow are built. Remove or protect this before production.

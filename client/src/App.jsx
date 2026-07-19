@@ -11,6 +11,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import Dashboard from './components/Dashboard';
 import Courses from './components/Courses';
+import CourseLearn from './components/CourseLearn';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function Landing() {
@@ -48,6 +49,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Courses />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/courses/:courseId/learn"
+            element={
+              <ProtectedRoute>
+                <CourseLearn />
               </ProtectedRoute>
             }
           />

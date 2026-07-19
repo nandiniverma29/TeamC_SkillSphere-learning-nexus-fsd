@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import Navbar from "./Navbar";
 import "./Dashboard.css";
+import { Link } from "react-router-dom";
 
 export default function Courses() {
   const { token } = useAuth();
@@ -77,14 +78,24 @@ export default function Courses() {
               </div>
               <h4 className="ss-course-title">{c.title}</h4>
               <p className="ss-course-percent">{c.totalUnits} units</p>
-              <button
-                className="ss-resume-btn"
-                style={{ marginTop: "10px", width: "100%" }}
-                disabled={c.enrolled || enrollingId === c.id}
-                onClick={() => handleEnroll(c.id)}
-              >
-                {c.enrolled ? "Enrolled" : enrollingId === c.id ? "Enrolling..." : "Enroll"}
-              </button>
+              {c.enrolled ? (
+                              <Link
+                                to={`/courses/${c.id}/learn`}
+                                className="ss-resume-btn"
+                                style={{ marginTop: "10px", width: "100%", display: "block", textAlign: "center", textDecoration: "none" }}
+                              >
+                                Continue learning
+                              </Link>
+                            ) : (
+                              <button
+                                className="ss-resume-btn"
+                                style={{ marginTop: "10px", width: "100%" }}
+                                disabled={enrollingId === c.id}
+                                onClick={() => handleEnroll(c.id)}
+                              >
+                                {enrollingId === c.id ? "Enrolling..." : "Enroll"}
+                              </button>
+                            )}
             </div>
           ))}
         </div>

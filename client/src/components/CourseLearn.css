@@ -1,0 +1,142 @@
+/* CourseLearn.css — uses the same --st-* variables defined in Dashboard.css */
+
+.cl-wrap {
+  display: flex;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+  gap: 1.5rem;
+  color: var(--st-cream);
+  font-family: "Work Sans", "Segoe UI", sans-serif;
+}
+
+.cl-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background: var(--st-forest-card);
+  border: 1px solid var(--st-border);
+  border-radius: 12px;
+  padding: 16px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.cl-sidebar-title {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 16px;
+  margin: 0 0 12px;
+}
+
+.cl-lesson-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  color: var(--st-text-muted);
+  cursor: pointer;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.cl-lesson-btn:hover {
+  background: rgba(242, 237, 225, 0.06);
+}
+
+.cl-lesson-btn.active {
+  background: rgba(193, 102, 47, 0.15);
+  color: var(--st-cream);
+}
+
+.cl-lesson-check {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--st-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--st-orange-light);
+}
+
+.cl-lesson-btn-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cl-main {
+  flex: 1;
+  background: var(--st-forest-card);
+  border: 1px solid var(--st-border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.cl-lesson-heading {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 20px;
+  margin: 0 0 16px;
+}
+
+.cl-video {
+  width: 100%;
+  border-radius: 8px;
+  background: black;
+}
+
+.cl-reading-text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--st-text-muted);
+}
+
+.cl-question {
+  margin-bottom: 20px;
+}
+
+.cl-question-text {
+  font-size: 14px;
+  color: var(--st-cream);
+  margin-bottom: 8px;
+}
+
+.cl-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--st-text-muted);
+  padding: 6px 0;
+  cursor: pointer;
+}
+
+.cl-quiz-result {
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cl-quiz-result.pass {
+  color: var(--st-sage);
+}
+
+.cl-quiz-result.fail {
+  color: var(--st-orange-light);
+}
+
+@media (max-width: 700px) {
+  .cl-wrap {
+    flex-direction: column;
+  }
+  .cl-sidebar {
+    width: auto;
+    max-height: 240px;
+  }
+}

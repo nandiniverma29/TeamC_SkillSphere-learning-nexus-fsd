@@ -3,10 +3,15 @@ package com.skillsphere.server.service;
 import com.skillsphere.server.model.Course;
 import com.skillsphere.server.model.DailyActivity;
 import com.skillsphere.server.model.Enrollment;
+import com.skillsphere.server.model.Lesson;
+import com.skillsphere.server.model.LessonType;
+import com.skillsphere.server.model.QuizQuestion;
 import com.skillsphere.server.model.User;
 import com.skillsphere.server.repository.CourseRepository;
 import com.skillsphere.server.repository.DailyActivityRepository;
 import com.skillsphere.server.repository.EnrollmentRepository;
+import com.skillsphere.server.repository.LessonRepository;
+import com.skillsphere.server.repository.QuizQuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +33,12 @@ public class DashboardService {
 
     @Autowired
     private DailyActivityRepository dailyActivityRepository;
+
+    @Autowired
+    private LessonRepository lessonRepository;
+
+    @Autowired
+    private QuizQuestionRepository quizQuestionRepository;
 
     // ---------------------------------------------------------------------
     // GET /api/dashboard/summary
@@ -91,6 +102,7 @@ public class DashboardService {
                 .map(e -> {
                     Map<String, Object> m = new LinkedHashMap<>();
                     m.put("id", e.getId());
+                    m.put("courseId", e.getCourse().getId());
                     m.put("title", e.getCourse().getTitle());
                     m.put("lastAccessed", formatRelativeTime(e.getLastAccessed()));
                     m.put("percentComplete", percent(e.getUnitsCompleted(), e.getCourse().getTotalUnits()));
@@ -104,6 +116,7 @@ public class DashboardService {
                 .map(e -> {
                     Map<String, Object> m = new LinkedHashMap<>();
                     m.put("id", e.getId());
+                    m.put("courseId", e.getCourse().getId());
                     m.put("title", e.getCourse().getTitle());
                     m.put("category", e.getCourse().getCategory());
                     m.put("percentComplete", percent(e.getUnitsCompleted(), e.getCourse().getTotalUnits()));
@@ -243,36 +256,37 @@ public class DashboardService {
     }
 
     // ---------------------------------------------------------------------
-    // Dev-only helper: seeds sample courses (if none exist) and creates
-    // demo enrollments + activity history for the given user, so the
-    // dashboard has real data to display without building the full course
-    // catalog / enrollment UI first. Safe to call multiple times for
-    // courses (won't duplicate), but will add fresh enrollments each call.
+    // Dev-only helper: ensures all 8 sample courses (and their lessons) exist,
+    // and enrolls the user in up to 3 courses they aren't already in. Safe to
+    // call repeatedly — never duplicates courses, lessons, or enrollments.
     // ---------------------------------------------------------------------
     public void seedDemoData(User user) {
-        if (courseRepository.count() == 0) {
-            courseRepository.save(newCourse("React Fundamentals", "Frontend", 20));
-            courseRepository.save(newCourse("Spring Boot Essentials", "Backend", 20));
-            courseRepository.save(newCourse("MySQL for Developers", "Databases", 15));
-            courseRepository.save(newCourse("Data Structures Basics", "DSA", 25));
-            courseRepository.save(newCourse("REST API Design", "Backend", 12));
-            courseRepository.save(newCourse("Advanced React Patterns", "Frontend", 18));
-            courseRepository.save(newCourse("SQL Query Optimization", "Databases", 10));
-            courseRepository.save(newCourse("Algorithms in Practice", "DSA", 22));
-        }
+        ensureCourseWithLessons("React Fundamentals", "Frontend", 20);
+        ensureCourseWithLessons("Spring Boot Essentials", "Backend", 20);
+        ensureCourseWithLessons("MySQL for Developers", "Databases", 15);
+        ensureCourseWithLessons("Data Structures Basics", "DSA", 25);
+        ensureCourseWithLessons("REST API Design", "Backend", 12);
+        ensureCourseWithLessons("Advanced React Patterns", "Frontend", 18);
+        ensureCourseWithLessons("SQL Query Optimization", "Databases", 10);
+        ensureCourseWithLessons("Algorithms in Practice", "DSA", 22);
 
         List<Course> courses = courseRepository.findAll();
         Random rand = new Random();
 
-        // Enroll the user in the first 3 courses with varying progress
-        for (int i = 0; i < Math.min(3, courses.size()); i++) {
-            Course course = courses.get(i);
+        // Only enroll the user in courses they aren't already enrolled in,
+        // so re-running this doesn't create duplicate enrollments.
+        List<Course> notYetEnrolled = courses.stream()
+                .filter(c -> enrollmentRepository.findByUserAndCourse(user, c).isEmpty())
+                .collect(Collectors.toList());
+
+        for (int i = 0; i < Math.min(3, notYetEnrolled.size()); i++) {
+            Course course = notYetEnrolled.get(i);
             Enrollment enrollment = new Enrollment();
             enrollment.setUser(user);
             enrollment.setCourse(course);
-            enrollment.setUnitsCompleted(rand.nextInt(course.getTotalUnits()));
-            enrollment.setEnrolledAt(LocalDateTime.now().minusDays(rand.nextInt(20) + 1));
-            enrollment.setLastAccessed(LocalDateTime.now().minusDays(rand.nextInt(3)));
+            enrollment.setUnitsCompleted(0);
+            enrollment.setEnrolledAt(LocalDateTime.now());
+            enrollment.setLastAccessed(LocalDateTime.now());
             enrollmentRepository.save(enrollment);
         }
 
@@ -289,11 +303,120 @@ public class DashboardService {
         }
     }
 
+    // ---------------------------------------------------------------------
+    // POST /api/dashboard/enrollments/{id}/progress
+    // Logs progress on a single enrollment and today's activity log.
+    // ---------------------------------------------------------------------
+    public Map<String, Object> addProgress(User user, Long enrollmentId, int unitsToAdd) {
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+
+        if (!enrollment.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You are not enrolled in this course");
+        }
+
+        int totalUnits = enrollment.getCourse().getTotalUnits();
+        int newUnits = Math.min(enrollment.getUnitsCompleted() + unitsToAdd, totalUnits);
+        enrollment.setUnitsCompleted(newUnits);
+        enrollment.setLastAccessed(LocalDateTime.now());
+        enrollmentRepository.save(enrollment);
+
+        // Also credit today's activity log, so the weekly chart and streak reflect this
+        LocalDate today = LocalDate.now();
+        DailyActivity activity = dailyActivityRepository.findByUserAndActivityDate(user, today)
+                .orElseGet(() -> {
+                    DailyActivity a = new DailyActivity();
+                    a.setUser(user);
+                    a.setActivityDate(today);
+                    a.setUnitsCompleted(0);
+                    a.setHoursSpent(0.0);
+                    return a;
+                });
+        activity.setUnitsCompleted(activity.getUnitsCompleted() + unitsToAdd);
+        activity.setHoursSpent(activity.getHoursSpent() + (unitsToAdd * 0.5));
+        dailyActivityRepository.save(activity);
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("id", enrollment.getId());
+        result.put("title", enrollment.getCourse().getTitle());
+        result.put("unitsCompleted", enrollment.getUnitsCompleted());
+        result.put("unitsTotal", totalUnits);
+        result.put("percentComplete", percent(enrollment.getUnitsCompleted(), totalUnits));
+        return result;
+    }
+
     private Course newCourse(String title, String category, int totalUnits) {
         Course c = new Course();
         c.setTitle(title);
         c.setCategory(category);
         c.setTotalUnits(totalUnits);
         return c;
+    }
+
+    // Finds the course by title if it already exists (preserving its id and
+    // any existing enrollments), or creates it if not. Either way, backfills
+    // lessons only if this course doesn't have any yet — safe to call
+    // repeatedly without duplicating courses, lessons, or enrollments.
+    private void ensureCourseWithLessons(String title, String category, int totalUnits) {
+        Course course = courseRepository.findByTitle(title)
+                .orElseGet(() -> courseRepository.save(newCourse(title, category, totalUnits)));
+
+        boolean alreadyHasLessons = !lessonRepository.findByCourseOrderByOrderIndexAsc(course).isEmpty();
+        if (alreadyHasLessons) {
+            return;
+        }
+
+        for (int i = 0; i < totalUnits; i++) {
+            Lesson lesson = new Lesson();
+            lesson.setCourse(course);
+            lesson.setOrderIndex(i);
+
+            boolean isQuiz = (i + 1) % 5 == 0;
+            boolean isReading = !isQuiz && (i % 3 == 2);
+
+            if (isQuiz) {
+                lesson.setType(LessonType.QUIZ);
+                lesson.setTitle("Quiz: " + category + " Checkpoint " + ((i + 1) / 5));
+                Lesson savedLesson = lessonRepository.save(lesson);
+                seedQuizQuestions(savedLesson, category);
+            } else if (isReading) {
+                lesson.setType(LessonType.READING);
+                lesson.setTitle("Reading: " + title + " - Part " + (i + 1));
+                lesson.setContent(
+                        "This reading covers key concepts in " + title +
+                                ". Take your time to review the material before moving to the next lesson."
+                );
+                lessonRepository.save(lesson);
+            } else {
+                lesson.setType(LessonType.VIDEO);
+                lesson.setTitle("Video: " + title + " - Lesson " + (i + 1));
+                lesson.setVideoUrl("https://www.w3schools.com/html/mov_bbb.mp4");
+                lessonRepository.save(lesson);
+            }
+        }
+    }
+
+    private void seedQuizQuestions(Lesson lesson, String category) {
+        quizQuestionRepository.save(newQuestion(lesson,
+                "Which of these is most closely associated with " + category + "?",
+                category, "Unrelated Topic A", "Unrelated Topic B", "Unrelated Topic C", 0));
+        quizQuestionRepository.save(newQuestion(lesson,
+                "A strong understanding of " + category + " helps you build what kind of skills?",
+                "Practical, job-ready skills", "Cooking skills", "Gardening skills", "Painting skills", 0));
+        quizQuestionRepository.save(newQuestion(lesson,
+                "What is a good habit while learning " + category + "?",
+                "Practicing consistently", "Skipping fundamentals", "Avoiding practice", "Never reviewing mistakes", 0));
+    }
+
+    private QuizQuestion newQuestion(Lesson lesson, String text, String a, String b, String c, String d, int correct) {
+        QuizQuestion q = new QuizQuestion();
+        q.setLesson(lesson);
+        q.setQuestionText(text);
+        q.setOptionA(a);
+        q.setOptionB(b);
+        q.setOptionC(c);
+        q.setOptionD(d);
+        q.setCorrectOption(correct);
+        return q;
     }
 }

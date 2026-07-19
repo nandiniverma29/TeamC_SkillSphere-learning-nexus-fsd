@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Navbar from "./Navbar";
 import "./Dashboard.css";
@@ -90,6 +91,18 @@ function CourseCard({ course }) {
       <h4 className="ss-course-title">{course.title}</h4>
       <ProgressBar percent={course.percentComplete} />
       <p className="ss-course-percent">{course.percentComplete}% complete</p>
+      <Link
+        to={`/courses/${course.courseId}/learn`}
+        className="ss-resume-btn"
+        style={{
+          marginTop: "10px",
+          display: "block",
+          textAlign: "center",
+          textDecoration: "none",
+        }}
+      >
+        {course.percentComplete === 100 ? "Review" : "Continue"}
+      </Link>
     </div>
   );
 }
@@ -106,7 +119,13 @@ function ContinueCard({ course }) {
         <span>
           {course.unitsCompleted}/{course.unitsTotal} units
         </span>
-        <button className="ss-resume-btn">Resume trail</button>
+        <Link
+          to={`/courses/${course.courseId}/learn`}
+          className="ss-resume-btn"
+          style={{ textDecoration: "none" }}
+        >
+          Resume trail
+        </Link>
       </div>
     </div>
   );
@@ -140,30 +159,30 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    async function loadDashboard() {
-      try {
-        const headers = { Authorization: `Bearer ${token}` };
+  const loadDashboard = async () => {
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
 
-        const [summaryRes, enrollmentsRes] = await Promise.all([
-          fetch("http://localhost:8080/api/dashboard/summary", { headers }),
-          fetch("http://localhost:8080/api/dashboard/enrollments", { headers }),
-        ]);
+      const [summaryRes, enrollmentsRes] = await Promise.all([
+        fetch("http://localhost:8080/api/dashboard/summary", { headers }),
+        fetch("http://localhost:8080/api/dashboard/enrollments", { headers }),
+      ]);
 
-        if (!summaryRes.ok || !enrollmentsRes.ok) {
-          throw new Error("Failed to load dashboard data");
-        }
-
-        const summary = await summaryRes.json();
-        const enrollments = await enrollmentsRes.json();
-
-        // Merge both responses into the single shape the components below expect
-        setData({ ...summary, ...enrollments });
-      } catch (err) {
-        setError("Could not load your dashboard. Is the backend running?");
+      if (!summaryRes.ok || !enrollmentsRes.ok) {
+        throw new Error("Failed to load dashboard data");
       }
-    }
 
+      const summary = await summaryRes.json();
+      const enrollments = await enrollmentsRes.json();
+
+      // Merge both responses into the single shape the components below expect
+      setData({ ...summary, ...enrollments });
+    } catch (err) {
+      setError("Could not load your dashboard. Is the backend running?");
+    }
+  };
+
+  useEffect(() => {
     if (token) loadDashboard();
   }, [token]);
 
