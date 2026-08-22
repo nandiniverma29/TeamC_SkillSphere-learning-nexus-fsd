@@ -1,6 +1,6 @@
-# 🎓 Enterprise Learning Platform
+# 🎓: Enterprise Learning Platform with Skill and Career Guidance System 
 
-**AI-Powered Learning & Career Development Platform**
+
 
 An all-in-one learning platform that combines structured courses, AI-driven personalized roadmaps, hands-on practice, and career tools — taking students from *"learning a skill"* to *"being job-ready"* in one connected experience.
 
