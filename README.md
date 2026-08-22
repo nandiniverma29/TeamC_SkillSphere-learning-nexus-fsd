@@ -1,4 +1,4 @@
-# 🎓: Enterprise Learning Platform with Skill and Career Guidance System 
+# 🎓 Enterprise Learning Platform with Skill and Career Guidance System 
 
 
 
